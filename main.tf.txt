@@ -1,0 +1,41 @@
+provider "aws" {
+  alias = "us_east_2"
+  region = "us-east-2"
+}
+
+provider "aws" {
+  alias = "us_west_1"
+  region = "us-west-1"
+}
+
+resource "aws_instance" "ohio"{
+   provider = aws.us_east_2
+   ami = "ami-003932de22c285676"
+   instance_type = "t2.micro"
+   user_data =  <<EOF
+	       #!/bin/bash
+	       sudo apt-get update
+               sudo apt-get install -y nginx
+               sudo systemctl start nginx
+               sudo systemctl enable nginx
+               EOF
+   tags = {
+     Name = "OHIO"
+   }
+}
+
+resource "aws_instance" "n_california" {
+   provider = aws.us_west_1
+   ami = "ami-0ecaad63ed3668fca"
+   instance_type = "t2.micro"
+   user_data = <<EOF
+               #!/bin/bash
+               sudo apt-get update
+               sudo apt install -y nginx
+               sudo systemctl start nginx
+               sudo systemctl enable nginx
+               EOF
+   tags = {
+     Name = "N-CALIFORNIA"
+   }
+}
